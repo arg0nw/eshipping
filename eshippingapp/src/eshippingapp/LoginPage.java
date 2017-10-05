@@ -52,6 +52,8 @@ public class LoginPage extends javax.swing.JFrame {
         txtNewConfPassword = new javax.swing.JTextField();
         btnSignup = new javax.swing.JButton();
         btnNewClear = new javax.swing.JButton();
+        cmbUsertype = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -135,6 +137,10 @@ public class LoginPage extends javax.swing.JFrame {
             }
         });
 
+        cmbUsertype.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "CUSTOMER", "SUPPLIER" }));
+
+        jLabel7.setText("User Type:");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -145,15 +151,17 @@ public class LoginPage extends javax.swing.JFrame {
                     .addComponent(jLabel6)
                     .addComponent(jLabel5)
                     .addComponent(jLabel4)
-                    .addComponent(jLabel3))
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnNewClear, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(btnSignup, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                    .addComponent(txtNewEmail)
-                    .addComponent(txtNewPassword)
-                    .addComponent(txtNewConfPassword)
-                    .addComponent(txtNewUsername, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(cmbUsertype, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnNewClear, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(btnSignup, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(txtNewEmail, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtNewPassword, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtNewConfPassword, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtNewUsername))
                 .addContainerGap(88, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -175,11 +183,15 @@ public class LoginPage extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(txtNewConfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmbUsertype, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addGap(16, 16, 16)
                 .addComponent(btnSignup)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnNewClear)
-                .addGap(101, 101, 101))
+                .addGap(72, 72, 72))
         );
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
@@ -230,6 +242,7 @@ public class LoginPage extends javax.swing.JFrame {
         String pwd = txtNewPassword.getText();
         String cpwd = txtNewConfPassword.getText();
         String email = txtNewEmail.getText();
+        String userType = cmbUsertype.getItemAt(cmbUsertype.getSelectedIndex());
         Connection con = null;
         Statement stmt = null;
 
@@ -248,7 +261,7 @@ public class LoginPage extends javax.swing.JFrame {
                 } else {
                     if (pwd == null ? cpwd == null : pwd.equals(cpwd)) {
 
-                        String sql = "INSERT INTO user (username, password, usertype) VALUES ('" + uname + "','" + pwd + "'," + "'CUST')";
+                        String sql = "INSERT INTO user (username, password, usertype) VALUES ('" + uname + "','" + pwd + "'," + "'"+userType+"')";
                         try {
                             stmt = con.createStatement();
                         } catch (SQLException ex) {
@@ -261,6 +274,7 @@ public class LoginPage extends javax.swing.JFrame {
                             txtNewEmail.setText("");
                             txtNewPassword.setText("");
                             txtNewConfPassword.setText("");
+                            cmbUsertype.setSelectedIndex(0);
                         } catch (SQLException ex) {
                             Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -295,15 +309,16 @@ public class LoginPage extends javax.swing.JFrame {
                 int users = rs.getInt("users");
                 if (users == 1) {
                     ResultSet r = stmt.executeQuery(getUserProSql);
+                    PresData.USERNAME = uname;
                     while (r.next()) {
                         String userType = r.getString("usertype");
                         switch (userType) {
-                            case "ADMIN":
+                            case "SUPPLIER":
                                 this.setVisible(false);
-                                new DashboardPage().setVisible(true);
+                                new AddItemPage().setVisible(true);
                                 break; // optional
 
-                            case "CUST":
+                            case "CUSTOMER":
                                 this.setVisible(false);
                                 new HomePage().setVisible(true);
                                 break; // optional
@@ -361,12 +376,14 @@ public class LoginPage extends javax.swing.JFrame {
     private javax.swing.JButton btnNewClear;
     private javax.swing.JButton btnSignin;
     private javax.swing.JButton btnSignup;
+    private javax.swing.JComboBox<String> cmbUsertype;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
