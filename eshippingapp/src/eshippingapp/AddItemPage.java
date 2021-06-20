@@ -59,6 +59,7 @@ public class AddItemPage extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tblOrders = new javax.swing.JTable();
 
+        //test
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setMaximumSize(new java.awt.Dimension(599, 379));
